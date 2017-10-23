@@ -1,3 +1,5 @@
+import os
+import sys
 from collections import Sequence
 
 import pandas as pd
@@ -78,6 +80,25 @@ def _assert_eq(l, r, **kwargs):
             _assert_eq(a, b, **kwargs)
     else:
         assert l == r
+
+
+def test(extra_args=None):
+    """Run the dask-ml test suite"""
+    try:
+        import pytest
+    except ImportError:
+        raise ImportError("Need pytest>=3.0 to run tests")
+    cmd = []
+    if extra_args:
+        if not isinstance(extra_args, list):
+            extra_args = [extra_args]
+        cmd = extra_args
+
+    PKG = os.path.dirname(__file__)
+    cmd += [PKG]
+
+    print("running: pytest {}".format(' '.join(cmd)))
+    sys.exit(pytest.main(cmd))
 
 
 __all__ = ['assert_estimator_equal']
