@@ -2,6 +2,7 @@
 """Generalized Linear Models for large datasets."""
 import textwrap
 
+from dask.array import vstack
 from dask_glm import algorithms, families
 from dask_glm.utils import (
     accuracy_score,
@@ -243,7 +244,10 @@ class LogisticRegression(_GLM):
             The probability of the sample for each class in the model.
         """
         X_ = self._check_array(X)
-        return sigmoid(dot(X_, self._coef))
+        prob = sigmoid(dot(X_, self._coef))
+        if prob.ndim == 1:
+            return vstack([1 - prob, prob]).T
+        return prob
 
     def score(self, X, y):
         """The mean accuracy on the given data and labels

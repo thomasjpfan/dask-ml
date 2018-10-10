@@ -56,7 +56,8 @@ def test_fit(fit_intercept, solver):
     lr = LogisticRegression(fit_intercept=fit_intercept)
     lr.fit(X, y)
     lr.predict(X)
-    lr.predict_proba(X)
+    proba = lr.predict_proba(X)
+    assert proba.shape == (100, 2)
 
 
 @pytest.mark.parametrize(
